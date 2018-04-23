@@ -1,6 +1,7 @@
 package pidugu.example.com.storagescanner;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements ScannerCallbackLi
 
     private ScannerAsyncTaskLoader asyncTaskLoader;
     private Set<Map.Entry<String, Long>> data;
+    private MenuItem menuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,24 +62,33 @@ public class MainActivity extends AppCompatActivity implements ScannerCallbackLi
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         stopScanning();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
+        invalidateOptionsMenu();
+        menuItem = menu.findItem(R.id.action_share);
+        menuItem.setVisible(false);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_share) {
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, data.size());
+            sendIntent.setType("text/plain");
+            startActivity(sendIntent);
+        }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt("Data",  data.size());
+        outState.putInt("Data", data.size());
         super.onSaveInstanceState(outState);
     }
 
@@ -116,9 +127,11 @@ public class MainActivity extends AppCompatActivity implements ScannerCallbackLi
         ResultListFragment resultListFragment = new ResultListFragment();
         resultListFragment.setData(data);
 
+        menuItem.setVisible(true);
+
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, resultListFragment)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -151,12 +164,13 @@ public class MainActivity extends AppCompatActivity implements ScannerCallbackLi
                         stopScanning();
                         mStartScanText.setText(getString(R.string.scanning_success));
                     }
-                }, 2000
+                }, 10000
         );
     }
 
     @Override
     public void onFailure() {
+
     }
 
     private ScannerCallbackListener getScannerInstance() {
