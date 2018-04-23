@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="list_item_card_view_margin">5dp</dimen>
+    <dimen name="list_item_card_view_corner_radius">10dp</dimen>
+    <dimen name="list_item_card_view_elevation">20dp</dimen>
+    <dimen name="list_item_text_view_size">20sp</dimen>
+    <dimen name="list_item_divider_margin">20dp</dimen>
+    <dimen name="list_item_key_text_view_width">150dp</dimen>
+</resources>
