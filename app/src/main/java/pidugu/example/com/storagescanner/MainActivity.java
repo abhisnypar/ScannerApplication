@@ -44,14 +44,9 @@ public class MainActivity extends AppCompatActivity implements ScannerCallbackLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_main);
         ButterKnife.bind(this);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @OnClick(R.id.scan_image)
-    public void startScan(final View view) {
-        mStartScanText.setText(getString(R.string.scanning_in_progress));
-        mProgressBar.setVisibility(View.VISIBLE);
-        checkRequirements();
+        if (savedInstanceState != null && (savedInstanceState.getInt("Data") != 0)) {
+            startScanning();
+        }
     }
 
     @Override
@@ -78,6 +73,21 @@ public class MainActivity extends AppCompatActivity implements ScannerCallbackLi
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt("Data",  data.size());
+        super.onSaveInstanceState(outState);
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @OnClick(R.id.scan_image)
+    public void startScan(final View view) {
+        mStartScanText.setText(getString(R.string.scanning_in_progress));
+        mProgressBar.setVisibility(View.VISIBLE);
+        checkRequirements();
     }
 
     private void checkRequirements() {

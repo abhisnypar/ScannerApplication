@@ -24,9 +24,16 @@ import pidugu.example.com.storagescanner.R;
  */
 public class ResultListFragment extends Fragment {
     private Set<Map.Entry<String, Long>> data;
+
     private ArrayList<String> keysList;
-    private ArrayList<Long> valuesList;
+    private ArrayList<Integer> valuesList;
+
     private TextView averageValueTextView;
+
+    private ResultListAdapter resultListAdapter;
+
+    private static final String KEY_LIST = "KeysList";
+    private static final String VALUES_LIST = "ValuesList";
 
     public ResultListFragment() {
         // Required empty public constructor
@@ -39,11 +46,11 @@ public class ResultListFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_result_list, container, false);
 
         averageValueTextView = view.findViewById(R.id.average_text_view);
-        initializeListViews();
+        initializeListViews(savedInstanceState);
 
         final RecyclerView recyclerView = view.findViewById(R.id.result_list_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        final ResultListAdapter resultListAdapter = new ResultListAdapter(keysList, valuesList);
+        resultListAdapter = new ResultListAdapter(keysList, valuesList);
 
         recyclerView.setAdapter(resultListAdapter);
         resultListAdapter.notifyDataSetChanged();
@@ -54,14 +61,30 @@ public class ResultListFragment extends Fragment {
         this.data = data;
     }
 
-    private void initializeListViews() {
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putStringArrayList(KEY_LIST, keysList);
+        outState.putIntegerArrayList(VALUES_LIST, valuesList);
+        super.onSaveInstanceState(outState);
+    }
+
+    private void initializeListViews(Bundle savedInstanceState) {
         keysList = new ArrayList<>();
         valuesList = new ArrayList<>();
 
-        for (Map.Entry<String, Long> mapping : data) {
-            keysList.add(mapping.getKey());
-            valuesList.add(mapping.getValue());
+        if (data != null) {
+            for (Map.Entry<String, Long> mapping : data) {
+                keysList.add(mapping.getKey());
+                Integer i = (int) (long) mapping.getValue();
+                valuesList.add(i);
+            }
         }
+
+        if (savedInstanceState != null) {
+            keysList = savedInstanceState.getStringArrayList(KEY_LIST);
+            valuesList = savedInstanceState.getIntegerArrayList(VALUES_LIST);
+        }
+
         Collections.reverse(keysList);
         Collections.reverse(valuesList);
 
@@ -71,10 +94,16 @@ public class ResultListFragment extends Fragment {
         valuesList.subList(9, valuesList.size() - 1).clear();
     }
 
-    private double calculateAverage(List<Long> marks) {
-        Long sum = 0L;
+    @Override
+    public void onPause() {
+        super.onPause();
+        averageValueTextView.setText(" ");
+    }
+
+    private double calculateAverage(List<Integer> marks) {
+        Integer sum = 0;
         if (!marks.isEmpty()) {
-            for (Long mark : marks) {
+            for (Integer mark : marks) {
                 sum += mark;
             }
             return sum.doubleValue() / marks.size();

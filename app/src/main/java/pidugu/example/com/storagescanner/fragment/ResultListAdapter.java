@@ -14,9 +14,9 @@ import pidugu.example.com.storagescanner.R;
 public class ResultListAdapter extends RecyclerView.Adapter<ResultListAdapter.ResultListViewHolder> {
 
     private ArrayList<String> keysList;
-    private ArrayList<Long> valuesList;
+    private ArrayList<Integer> valuesList;
 
-    public ResultListAdapter(ArrayList<String> keysList, ArrayList<Long> valuesList) {
+    public ResultListAdapter(ArrayList<String> keysList, ArrayList<Integer> valuesList) {
         this.keysList = keysList;
         this.valuesList = valuesList;
     }
