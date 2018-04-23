@@ -16,7 +16,7 @@ import pidugu.example.com.storagescanner.ServiceCallBackListener.ScannerCallback
 public class ScannerAsyncTaskLoader extends AsyncTaskLoader<Set<Map.Entry<String, Long>>> {
     private ScannerCallbackListener scannerCallbackListener;
 
-    public ScannerAsyncTaskLoader(@NonNull Context context, ScannerCallbackListener scannerInstance) {
+    public ScannerAsyncTaskLoader(@NonNull Context context, final ScannerCallbackListener scannerInstance) {
         super(context);
         scannerCallbackListener = scannerInstance;
     }

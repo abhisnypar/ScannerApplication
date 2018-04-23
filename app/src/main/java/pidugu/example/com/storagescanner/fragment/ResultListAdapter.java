@@ -16,7 +16,7 @@ public class ResultListAdapter extends RecyclerView.Adapter<ResultListAdapter.Re
     private ArrayList<String> keysList;
     private ArrayList<Integer> valuesList;
 
-    public ResultListAdapter(ArrayList<String> keysList, ArrayList<Integer> valuesList) {
+    public ResultListAdapter(final ArrayList<String> keysList, final ArrayList<Integer> valuesList) {
         this.keysList = keysList;
         this.valuesList = valuesList;
     }
@@ -29,8 +29,8 @@ public class ResultListAdapter extends RecyclerView.Adapter<ResultListAdapter.Re
 
     @Override
     public void onBindViewHolder(ResultListViewHolder holder, int position) {
-            holder.fileNameTextView.setText(keysList.get(position));
-            holder.fileLengthTextView.setText(String.valueOf(valuesList.get(position)));
+        holder.fileNameTextView.setText(keysList.get(position));
+        holder.fileLengthTextView.setText(String.valueOf(valuesList.get(position)));
     }
 
     @Override

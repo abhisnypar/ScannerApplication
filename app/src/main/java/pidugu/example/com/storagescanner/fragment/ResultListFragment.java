@@ -30,8 +30,6 @@ public class ResultListFragment extends Fragment {
 
     private TextView averageValueTextView;
 
-    private ResultListAdapter resultListAdapter;
-
     private static final String KEY_LIST = "KeysList";
     private static final String VALUES_LIST = "ValuesList";
 
@@ -50,14 +48,15 @@ public class ResultListFragment extends Fragment {
 
         final RecyclerView recyclerView = view.findViewById(R.id.result_list_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        resultListAdapter = new ResultListAdapter(keysList, valuesList);
+
+        final ResultListAdapter resultListAdapter = new ResultListAdapter(keysList, valuesList);
 
         recyclerView.setAdapter(resultListAdapter);
         resultListAdapter.notifyDataSetChanged();
         return view;
     }
 
-    public void setData(Set<Map.Entry<String, Long>> data) {
+    public void setData(final Set<Map.Entry<String, Long>> data) {
         this.data = data;
     }
 
@@ -100,7 +99,7 @@ public class ResultListFragment extends Fragment {
         averageValueTextView.setText(" ");
     }
 
-    private double calculateAverage(List<Integer> marks) {
+    private double calculateAverage(final List<Integer> marks) {
         Integer sum = 0;
         if (!marks.isEmpty()) {
             for (Integer mark : marks) {

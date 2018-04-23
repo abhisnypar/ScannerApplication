@@ -6,7 +6,7 @@ import java.util.Set;
 
 public interface ScannerCallbackListener {
 
-    void onSuccess(Set<Map.Entry<String, Long>> data);
+    void onSuccess(final Set<Map.Entry<String, Long>> data);
 
     void onFailure();
 }

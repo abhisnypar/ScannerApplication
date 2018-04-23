@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements ScannerCallbackLi
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_share) {
-            Intent sendIntent = new Intent();
+            final Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
             sendIntent.putExtra(Intent.EXTRA_TEXT, data.size());
             sendIntent.setType("text/plain");
@@ -92,6 +92,24 @@ public class MainActivity extends AppCompatActivity implements ScannerCallbackLi
         super.onSaveInstanceState(outState);
     }
 
+    @Override
+    public void onSuccess(final Set<Map.Entry<String, Long>> data) {
+        this.data = data;
+        new Handler().postDelayed(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        stopScanning();
+                        mStartScanText.setText(getString(R.string.scanning_success));
+                    }
+                }, 10000
+        );
+    }
+
+    @Override
+    public void onFailure() {
+        //doNothing
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @OnClick(R.id.scan_image)
@@ -99,6 +117,16 @@ public class MainActivity extends AppCompatActivity implements ScannerCallbackLi
         mStartScanText.setText(getString(R.string.scanning_in_progress));
         mProgressBar.setVisibility(View.VISIBLE);
         checkRequirements();
+    }
+
+    public boolean isExternalStorageWritable() {
+        return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
+    }
+
+    /* Checks if external storage is available to at least read */
+    public boolean isExternalStorageReadable() {
+        final String state = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED.equals(state) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
     }
 
     private void checkRequirements() {
@@ -123,8 +151,9 @@ public class MainActivity extends AppCompatActivity implements ScannerCallbackLi
             mScanImageView.setVisibility(View.INVISIBLE);
             asyncTaskLoader.stopLoading();
         }
+
         mStartScanText.setText(getString(R.string.list_results));
-        ResultListFragment resultListFragment = new ResultListFragment();
+        final ResultListFragment resultListFragment = new ResultListFragment();
         resultListFragment.setData(data);
 
         menuItem.setVisible(true);
@@ -142,35 +171,6 @@ public class MainActivity extends AppCompatActivity implements ScannerCallbackLi
         } else {
             startScanning();
         }
-    }
-
-    public boolean isExternalStorageWritable() {
-        return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
-    }
-
-    /* Checks if external storage is available to at least read */
-    public boolean isExternalStorageReadable() {
-        String state = Environment.getExternalStorageState();
-        return Environment.MEDIA_MOUNTED.equals(state) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
-    }
-
-    @Override
-    public void onSuccess(final Set<Map.Entry<String, Long>> data) {
-        this.data = data;
-        new Handler().postDelayed(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        stopScanning();
-                        mStartScanText.setText(getString(R.string.scanning_success));
-                    }
-                }, 10000
-        );
-    }
-
-    @Override
-    public void onFailure() {
-
     }
 
     private ScannerCallbackListener getScannerInstance() {
